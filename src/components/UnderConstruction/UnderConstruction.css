@@ -1,0 +1,10 @@
+.InactivePage {
+  /*כרטיסייה של משחק לא פעיל*/
+  margin-top: 5vw;
+  font-size: clamp(2px, 4vw, 50px);
+  color: transparent;
+  font-family: "Material Symbols Outlined";
+  text-shadow: 1px 1px 0 red, -1px -1px 0 green, 3px 0 0 violet, -3px 0 0 yellow,
+    0 -3px 0 aqua, 0 3px 0 yellowgreen;
+  color: #eee;
+}

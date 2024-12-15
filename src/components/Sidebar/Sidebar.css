@@ -1,0 +1,28 @@
+.sidebar {
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.nav-button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #00ffea;
+    color: #1a1a2e;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.3s;
+    font-family: 'CustomFont', sans-serif;
+    width: 60px;
+}
+
+.nav-button:hover {
+    background-color: #e94560;
+    color: #ffffff;
+    transform: scale(1.05);
+}

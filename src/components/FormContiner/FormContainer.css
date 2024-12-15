@@ -1,0 +1,18 @@
+.form-container {
+    /*הטופס שמסודר יפה באמצע הדף*/
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.0);
+    /* Adjust the alpha (fourth) value for transparency */
+    border-radius: 10px;
+    padding: 20px;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    min-width: 70vw;
+    min-width: 70vh;
+
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+    /* Optional: Add a subtle shadow */
+  }

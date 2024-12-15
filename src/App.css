@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'CustomFont';
+  src: url('./assets/fonts/ploni-regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'CustomFont', sans-serif;
+  background-color: black;
+}
+
+*{
+  margin: 0;
+}

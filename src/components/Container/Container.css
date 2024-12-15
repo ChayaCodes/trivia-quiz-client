@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    max-height: 100vh;
+    margin: 0;
+    width: 100vw;
+}
+
+.sidebar {
+    width: 20vw;
+    height: 80vh;
+}
+
+.content {
+    width: 80vw;
+    overflow-y: auto;
+}
+
+.footer {
+    background-color: #1a1a2e;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    font-size: 14px;
+    font-family: 'CustomFont', sans-serif;
+    height: 20px;    
+}

@@ -1,0 +1,127 @@
+.flip-box {
+    background-color: transparent;
+    width: 17vw;
+    height: 20vw;
+    box-shadow: 50% 50% 0 0 white;
+    perspective: 1000px;
+    border-radius: 10px;
+  }
+  
+  .flip-box-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+  .flip-box:hover .flip-box-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .flip-box-front img {
+    margin: 5%;
+    max-width: 90%;
+    border: 1px solid transparent;
+    outline: 1px solid transparent;
+    border-radius: 10px;
+    width: 300px;
+    height: 200px;
+  }
+  
+  .flip-box-front h3 {
+    color: white;
+    font-family: 'Cabin', helvetica, arial, sans-serif;
+  }
+  
+  .flip-box-front,
+  .flip-box-back {
+    background-color: #000000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    animation: glow2 6000ms ease-out infinite alternate;
+    border-radius: 30px;
+    border-top: 0px;
+    border-left: 0px;
+    font-size: 1.7vw;
+  }
+  
+  .flip-box-back {
+    color: #ffffff;
+    transform: rotateY(180deg);
+  }
+  
+  @keyframes glow2 {
+    0% {
+      border-color: #ff0000;
+      box-shadow: 10px 10px 30px 2px rgba(255, 0, 0, 0.6);
+    }
+    6.25% {
+      border-color: #ff0000;
+      box-shadow: 2px 2px 30px 2px rgba(255, 0, 0, 0.6);
+    }
+    12.5% {
+      border-color: #ff7300;
+      box-shadow: 2px 2px 30px 2px rgba(255, 115, 0, 0.6);
+    }
+    18.75% {
+      border-color: #ff7300;
+      box-shadow: 10px 10px 30px 2px rgba(255, 115, 0, 0.6);
+    }
+    25% {
+      border-color: #fffb00;
+      box-shadow: 10px 10px 30px 2px rgba(255, 251, 0, 0.6);
+    }
+    31.25% {
+      border-color: #fffb00;
+      box-shadow: 2px 2px 30px 2px rgba(255, 251, 0, 0.6);
+    }
+    37.5% {
+      border-color: #48ff00;
+      box-shadow: 2px 2px 30px 2px rgba(72, 255, 0, 0.6);
+    }
+    43.25% {
+      border-color: #48ff00;
+      box-shadow: 10px 10px 30px 2px rgba(72, 255, 0, 0.6);
+    }
+    50% {
+      border-color: #00ffd5;
+      box-shadow: 10px 10px 30px 2px rgba(0, 225, 213, 0.6);
+    }
+    56.25% {
+      border-color: #00ffd5;
+      box-shadow: 2px 2px 30px 2px rgba(0, 225, 213, 0.6);
+    }
+    62.5% {
+      border-color: #002bff;
+      box-shadow: 2px 2px 30px 2px rgba(0, 43, 255, 0.6);
+    }
+    67.75% {
+      border-color: #002bff;
+      box-shadow: 10px 10px 30px 2px rgba(0, 43, 255, 0.6);
+    }
+    75% {
+      border-color: #7a00ff;
+      box-shadow: 10px 10px 30px 2px rgba(122, 0, 225, 0.6);
+    }
+    81.25% {
+      border-color: #7a00ff;
+      box-shadow: 2px 2px 30px 2px rgba(122, 0, 225, 0.6);
+    }
+    87.5% {
+      border-color: #ff00c8;
+      box-shadow: 2px 2px 30px 2px rgba(255, 0, 200, 0.6);
+    }
+    93.75% {
+      border-color: #ff00c8;
+      box-shadow: 10px 10px 30px 2px rgba(255, 0, 200, 0.6);
+    }
+    100% {
+      border-color: #ff0000;
+      box-shadow: 10px 10px 30px 2px rgba(255, 0, 0, 0.6);
+    }
+  }

@@ -1,0 +1,14 @@
+.flip-box-front img {
+  margin: 5%;
+  max-width: 90%;
+  border: 1px solid transparent;
+  outline: 1px solid transparent;
+  border-radius: 10px;
+  width: 300px;
+  height: 200px;
+}
+
+.flip-box-front h3 {
+  color: white;
+  font-family: 'Cabin', helvetica, arial, sans-serif;
+}

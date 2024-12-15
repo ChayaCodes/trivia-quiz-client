@@ -1,0 +1,39 @@
+.bodyGames {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.games {
+  /*דיב שמכיל את כל הכרטיסים*/
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  row-gap: 4rem;
+  column-gap: 4rem;
+  margin: 2vw;
+}
+
+/*הכותרת שיכנס אליה פנייה אישית עם שם המשתמש*/
+.toname {
+  color: white;
+}
+
+.rmhv h1 {
+  font-size: 3vw;
+}
+
+.rmhv {
+  /*כותרות של הדף*/
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: clamp(2px, 4vw, 25px);
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  color: transparent;
+  direction: rtl;
+  color: #eee;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1000;
+  /* שיהיה מעל הכל */
+}
+
