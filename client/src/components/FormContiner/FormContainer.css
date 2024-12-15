@@ -12,6 +12,7 @@
     /* Center vertically */
     min-width: 70vw;
     min-width: 70vh;
+    gap: 10px;
 
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
     /* Optional: Add a subtle shadow */
