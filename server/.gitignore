@@ -1,0 +1,17 @@
+__pycache__
+*.db
+try.py
+get_data.py
+.idea
+*.idea
+.venv
+/.venv
+/.idea
+*.exe
+.idea
+app2.py
+management.py
+.idea/*
+manage.py
+manage.intp
+*/venv/*
