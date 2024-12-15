@@ -104,13 +104,13 @@ def generate_unique_user_id(length=8):
             return new_id
 
 # CRUD operations for Users
-def create_user(id, name, email, password, role):
+def create_user(id, name, email, password):
     try:
         data_conn = sqlite3.connect(DATABASE_NAME)
         data_cursor = data_conn.cursor()
         data_cursor.execute("""
-            INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)
-        """, (id, name, email, password, role))
+            INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?, ?)
+        """, (id, name, email, password))
         data_conn.commit()
     finally:
         data_conn.close()
