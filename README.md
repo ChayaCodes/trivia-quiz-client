@@ -29,6 +29,9 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     npm install
     ```
 3. Start the development server:
+
+# The server side still dont working! you need only to run the client side!
+
     ```sh
     npm start
     ```
