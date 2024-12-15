@@ -18,10 +18,6 @@ The Trivia Quiz Application is an interactive platform that allows users to part
 
 ## Installation
 
-### Prerequisites
-- Node.js (v14 or later)
-- Python (v3.8 or later)
-- SQLite
 
 ### Client Setup
 1. Navigate to the client directory:
@@ -43,38 +39,16 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```sh
     cd server
     ```
-2. Create a virtual environment:
+
+2. Run the app file:
     ```sh
-    python -m venv venv
+    py app.py
     ```
-3. Activate the virtual environment:
-    - **Windows**:
-      ```sh
-      venv\Scripts\activate
-      ```
-    - **macOS/Linux**:
-      ```sh
-      source venv/bin/activate
-      ```
-4. Install dependencies:
+    or
     ```sh
-    pip install -r requirements.txt
+    python app.py
     ```
-5. Set up environment variables:
-    Create a `.env` file in the server directory with the following content:
-    ```
-    FLASK_APP=app.py
-    FLASK_ENV=development
-    SECRET_KEY=your_secret_key
-    ```
-6. Initialize the database and run the server:
-    ```sh
-    flask db init
-    flask db migrate
-    flask db upgrade
-    flask run
-    ```
-    The server will run at [http://0.0.0.0:5000](http://0.0.0.0:5000).
+
 
 ## API Endpoints
 
