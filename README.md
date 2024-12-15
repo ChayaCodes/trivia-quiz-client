@@ -39,8 +39,19 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```sh
     cd server
     ```
-
-2. Run the app file:
+2. Create a Virtual Environment (if not already created):
+    ```sh
+    python -m venv venv
+    ```
+3. Activate the Virtual Environment
+    ```sh
+    .\venv\Scripts\activate
+    ```
+4. Install all the libraries from the requirements file:
+    ```sh
+    pip install -r requirements.txt
+    ```
+5. Run the app file:
     ```sh
     py app.py
     ```
@@ -48,7 +59,6 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```sh
     python app.py
     ```
-
 
 ## API Endpoints
 
