@@ -30,7 +30,6 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```
 3. Start the development server:
 
-# The server side still dont working! you need only to run the client side!
 
     ```sh
     npm start
@@ -38,6 +37,8 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     The client will run at [http://localhost:3000](http://localhost:3000).
 
 ### Server Setup
+# The server side still dont working! you need only to run the client side!
+
 1. Navigate to the server directory:
     ```sh
     cd server
