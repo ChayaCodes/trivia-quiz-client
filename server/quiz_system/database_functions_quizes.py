@@ -109,7 +109,7 @@ def create_user(id, name, email, password):
         data_conn = sqlite3.connect(DATABASE_NAME)
         data_cursor = data_conn.cursor()
         data_cursor.execute("""
-            INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)
         """, (id, name, email, password))
         data_conn.commit()
     finally:
