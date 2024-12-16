@@ -52,6 +52,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .activate-button:hover {
@@ -73,6 +74,7 @@
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
     font-family: 'CustomFont', sans-serif;
+    text-align: center;
 }
 
 .edit-button:hover {
