@@ -32,7 +32,7 @@ function Quizzes() {
 
   return (
     <div>
-      <h1>רשימת החידונים</h1>
+      <h1 className='Title'>רשימת החידונים</h1>
       <ul className='quiz-list'>
         {quizzes.map(quiz => (
           <li className='quiz-item' key={quiz.id}>
