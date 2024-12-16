@@ -28,10 +28,10 @@ function Sidebar() {
 
     return (
         <div className="sidebar">
-            <NavLink to="/" className="nav-button">{icons.home}</NavLink>
-            <NavLink to="/quizzes" className="nav-button">{icons.quizzes}</NavLink>
-            <NavLink to="/create-quiz" className="nav-button">{icons.create}</NavLink>
-            <NavLink to="/login" className="nav-button">{icons.login}</NavLink>
+            <NavLink to="/" className="nav-button" dataTooltip="עמוד הבית">{icons.home}</NavLink>
+            <NavLink to="/quizzes" className="nav-button" dataTooltip="כל החידונים">{icons.quizzes}</NavLink>
+            <NavLink to="/create-quiz" className="nav-button" dataTooltip="חידון חדש">{icons.create}</NavLink>
+            <NavLink to="/login" className="nav-button" dataTooltip="חשבון">{icons.login}</NavLink>
         </div>
     );
 }
