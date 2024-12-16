@@ -9,6 +9,7 @@
 }
 
 .nav-button {
+    position: relative;
     margin: 10px 0;
     padding: 10px 10px;
     background-color: #000000;
@@ -21,6 +22,29 @@
     font-family: 'CustomFont', sans-serif;
     width: 24px;
     height: 24px;
+}
+
+.nav-button.active {
+    background-color: #00ffea;
+    border-color: #000000;
+    color: #000000;
+    transform: translate;
+}
+
+.nav-button:after {
+    content: attr(dataTooltip);
+    position: absolute;
+    background-color: #1a1a2e;
+    color: #ffffff;
+    display: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 9999;
+}
+
+.nav-button:hover:after {
+    display: block;
 }
 
 .nav-button:hover {
