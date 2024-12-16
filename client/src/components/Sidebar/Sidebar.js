@@ -32,7 +32,6 @@ function Sidebar() {
             <NavLink to="/quizzes" className="nav-button">{icons.quizzes}</NavLink>
             <NavLink to="/create-quiz" className="nav-button">{icons.create}</NavLink>
             <NavLink to="/login" className="nav-button">{icons.login}</NavLink>
-            <NavLink to="/register" className="nav-button">הרשמה</NavLink>
         </div>
     );
 }
