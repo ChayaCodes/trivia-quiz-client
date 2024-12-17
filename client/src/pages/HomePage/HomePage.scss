@@ -1,22 +1,34 @@
+/* עיצוב עבור דף ראשי */
 .bodyIndex {
-  /* דף ראשי */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* height: 100vh; */ 
-  /* אם מגבילים את הגובה הרספונסיבי נהרס */
   margin: 0;
   padding: 0;
+  background: linear-gradient(45deg, red, rgb(87, 211, 211), rgb(255, 0, 183), green, blue);
+  background-size: 400% 400%;
+  animation: gradientAnimation 10s ease infinite;
 }
+  .regOrSign {
 
-.regOrSign {
-  background-color: black;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .btns {
@@ -33,25 +45,24 @@
   line-height: 1.6; /* רווח בין השורות */
   margin: 20px; /* רווח פנימי */
   padding: 10px; /* רווחים פנימיים */
-  text-align: center; /* מיישר את הכותרת במרכז */
-}
-
-/* עיצוב כותרת ראשית */
-.home h1 {
-  color: #1d3557; /* צבע כחול כהה לכותרת */
-  font-size: 5vw; /* גודל גופן דינמי שמתעדכן לפי רוחב המסך */
-  margin-bottom: 15px; /* רווח מתחת לכותרת */
-  min-font-size: 24px; /* הגבלת גודל מינימלי לכותרת */
+  text-align: center; /* מיישר את הטקסט במרכז */
 }
 
 .home h1, .home h2, .home p {
   text-align: center;
 }
 
-/* עיצוב כותרת שנייה */
+/* עיצוב כותרת ראשית */
+.home h1 {
+  color: #1d3557; /* צבע כחול כהה לכותרת */
+  font-size: clamp(24px, 5vw, 50px); /* גודל גופן דינמי שמתעדכן לפי רוחב המסך */
+  margin-bottom: 15px; /* רווח מתחת לכותרת */
+}
+
+/* עיצוב כותרת שנייה */ 
 .home h2 {
   color: greenyellow;
-  font-size: 2.5vw; /* גודל גופן דינמי */
+  font-size: clamp(18px, 3vw, 35px); /* גודל גופן דינמי */
   margin-top: 10px;
 }
 
@@ -67,58 +78,60 @@
 
 /* עיצוב פסקאות */
 .home p {
-  font-size: 1.5vw; /* גודל טקסט סטנדרטי לפסקאות */
+  font-size: clamp(1.2rem, 2vw, 2.5rem); /* גודל דינמי לפסקאות */
   color: #e77a43; /* צבע טקסט כהה קצת יותר */
   margin: 10px 0; /* רווח בין פסקאות */
 }
 
-/* צבעים שונים עבור הספנים */
-.home p span:nth-child(1) {
-  color: red;
-}
+// to make the p colorfull
+// /* צבעים שונים עבור הספנים */
+// .home p span:nth-child(1) {
+//   color: red;
+// }
 
-.home p span:nth-child(2) {
-  color: blue;
-}
+// .home p span:nth-child(2) {
+//   color: blue;
+// }
 
-.home p span:nth-child(3) {
-  color: green;
-}
+// .home p span:nth-child(3) {
+//   color: green;
+// }
 
-.home p span:nth-child(4) {
-  color: purple;
-}
+// .home p span:nth-child(4) {
+//   color: purple;
+// }
 
-.home p span:nth-child(5) {
-  color: orange;
-}
+// .home p span:nth-child(5) {
+//   color: orange;
+// }
 
-.home p span:nth-child(6) {
-  color: rgb(132, 255, 0);
-}
+// .home p span:nth-child(6) {
+//   color: rgb(132, 255, 0);
+// }
 
-.home p span:nth-child(7) {
-  color: rgb(66, 140, 231);
-}
+// .home p span:nth-child(7) {
+//   color: rgb(66, 140, 231);
+// }
 
-.home p span:nth-child(8) {
-  color: rgb(132, 255, 0);
-}
+// .home p span:nth-child(8) {
+//   color: rgb(132, 255, 0);
+// }
 
-.home p span:nth-child(9) {
-  color: rgb(66, 231, 72);
-}
+// .home p span:nth-child(9) {
+//   color: rgb(66, 231, 72);
+// }
+
 
 /* Media Queries */
 
 /* מסכים בינוניים כמו טאבלטים */
 @media (max-width: 1024px) { 
   .home h1 {
-    font-size: 10vw; /* גודל טקסט קטן יותר בטאבלטים */
+    font-size: clamp(24px, 6vw, 50px); /* גודל קטן יותר בטאבלטים */
   }
 
   .home h2 {
-    font-size: 5vw; /* גודל קטן יותר בכותרת שנייה */
+    font-size: clamp(18px, 4vw, 35px); /* גודל קטן יותר בכותרת שנייה */
   }
 
   .home p {
@@ -130,30 +143,34 @@
 /* מסכים קטנים כמו סמארטפונים */
 @media (max-width: 768px) { 
   .home h1 {
-    font-size: 12vw; /* גודל קטן יותר בסמארטפונים */
+    font-size: clamp(24px, 8vw, 50px); /* גודל קטן יותר בסמארטפונים */
   }
 
   .home h2 {
-    font-size: 6vw; /* גודל קטן יותר בכותרת שנייה */
+    font-size: clamp(18px, 5vw, 35px); /* גודל קטן יותר בכותרת שנייה */
   }
 
   .home p {
     font-size: 1.5rem; /* גודל קטן יותר לפסקאות */
   }
+
 }
 
 /* מסכים מאוד קטנים כמו טלפונים ניידים */
 @media (max-width: 480px) { 
   .home h1 {
-    font-size: 6vw; /* גודל קטן מאוד בטלפונים */
-    min-font-size: 24px; /* הגבלת גודל מינימלי לכותרת */
+    font-size: clamp(20px, 10vw, 50px); /* גודל קטן מאוד בטלפונים */
   }
 
   .home h2 {
-    font-size: 5vw; /* גודל קטן מאוד בכותרת שנייה */
+    font-size: clamp(16px, 6vw, 35px); /* גודל קטן מאוד בכותרת שנייה */
   }
 
   .home p {
     font-size: 1.2rem; /* גודל קטן יותר לפסקאות */
   }
+  .btns {
+    max-width: 10px;
+  }
+
 }
