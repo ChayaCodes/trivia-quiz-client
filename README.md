@@ -63,6 +63,14 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```sh
     python app.py
     ```
+## JWT
+In any function where you want to use the token, add
+``` { withCredentials: true } ```
+after the data you are sending.
+
+For example:
+
+```const response = await axios.post('http://localhost:5000/auth/login', userData, { withCredentials: true}); ```
 
 ## API Endpoints
 
