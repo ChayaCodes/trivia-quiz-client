@@ -1,8 +1,8 @@
 # blueprints.py
 
-from quiz_system.auth_api import auth_api
-from quiz_system.quizzes_interface_api import quizzes_interface_api
-from quiz_system.quiz_service import quiz_service_api
+from quiz_system.api.auth_api import auth_api
+from quiz_system.api.quizzes_interface_api import quizzes_interface_api
+from quiz_system.api.quiz_service import quiz_service_api
 
 
 def register_blueprints(app):

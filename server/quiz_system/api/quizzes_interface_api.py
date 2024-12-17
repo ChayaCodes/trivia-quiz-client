@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
-from .auth import decode_token
-from .admin_interface import (
+from ..business_logic.auth import decode_token
+from ..business_logic.admin_interface import (
     create_new_quiz,
     edit_quiz,
     activate_quiz,

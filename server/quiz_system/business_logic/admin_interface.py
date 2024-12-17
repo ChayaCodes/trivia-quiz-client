@@ -1,4 +1,4 @@
-from .database_functions_quizes import (
+from ..data.database_functions_quizes import (
     create_quiz,
     get_quiz,
     update_quiz,
