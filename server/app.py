@@ -1,12 +1,12 @@
 from flask import Flask
 from database_functions import initialize_db
 from blueprints import register_blueprints
+from flask_cors import CORS
 
 app = Flask(__name__)
-
-initialize_db()
 register_blueprints(app)
-
+CORS(app, supports_credentials=True)
+initialize_db()
 @app.route('/')
 def route_default():
     return 'Welcome'
