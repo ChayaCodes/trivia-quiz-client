@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response, Blueprint
 from functools import wraps
-from quiz_system.auth import register_user, login_user, decode_token
-from quiz_system.database_functions_quizes import get_user, create_user
+from business_logic.auth import register_user, login_user, decode_token
+from data.database_functions_quizes import get_user, create_user
 import dotenv
 
 # Load environment variables

@@ -4,10 +4,11 @@
     max-height: 100vh;
     margin: 0;
     width: 100vw;
+        gap: 20px;
 }
 
 .sidebar {
-    width: 20vw;
+    width: 5vw;
     height: 80vh;
 }
 

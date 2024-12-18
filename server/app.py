@@ -1,5 +1,5 @@
 from flask import Flask
-from database_functions import initialize_db
+from data.database_functions import initialize_db
 from blueprints import register_blueprints
 from flask_cors import CORS
 

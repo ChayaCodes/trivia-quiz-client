@@ -4,7 +4,7 @@ import traceback
 from flask import Blueprint
 from flask import jsonify, request
 
-from database_functions import (
+from data.database_functions import (
     set_data_by_id,
     get_data_list,
     set_call_data,
@@ -20,7 +20,7 @@ from utils import (
     normalize_phone_number, get_similarity_results
 )
 
-from .participant_interface import add_participant, answer_current_question
+from business_logic.participant_interface import add_participant, answer_current_question
 
 quiz_service_api = Blueprint('quiz_service_api', __name__)
 

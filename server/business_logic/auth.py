@@ -3,7 +3,7 @@ import jwt
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from .database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email, get_user_by_username
+from data.database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email, get_user_by_username
 
 load_dotenv()
 

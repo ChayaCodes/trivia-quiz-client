@@ -1,4 +1,4 @@
-from .database_functions_quizes import (
+from data.database_functions_quizes import (
     get_participant,
     create_participant,
     get_quiz,
