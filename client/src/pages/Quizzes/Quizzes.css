@@ -39,12 +39,7 @@
 .activate-button {
   background-color: #e94560;
   border: none;
-  padding: 10px 20px;
-  color: #ffffff;
   cursor: pointer;
-  font-size: 16px;
-  font-family: "CustomFont", sans-serif;
-  transition: background-color 0.3s, transform 0.3s;
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -52,13 +47,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-}
-
-.activate-button:hover {
-  background-color: #ffffff;
-  color: #e94560;
-  transform: scale(1.05);
 }
 
 .edit-button {
@@ -71,15 +59,23 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-  font-family: "CustomFont", sans-serif;
-  text-align: center;
 }
 
-.edit-button:hover {
+.delete-button {
+  background-color: #e94560;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
   background-color: #ffffff;
-  color: #00ffea;
-  transform: scale(1.05);
 }
 
 .buttons {
