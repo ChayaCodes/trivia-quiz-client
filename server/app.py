@@ -1,6 +1,6 @@
 from flask import Flask
-from quiz_system.data.database_functions import initialize_db
-from quiz_system.blueprints import register_blueprints
+from data.database_functions import initialize_db
+from blueprints import register_blueprints
 
 app = Flask(__name__)
 
