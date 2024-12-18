@@ -9,14 +9,14 @@ import Register from "./pages/RegisterForm/RegisterForm";
 import CreateQuiz from "./pages/CreateQuiz/CreateQuiz";
 import QuizPage from "./pages/QuizPage/QuizPage";
 import Quizzes from "./pages/Quizzes/Quizzes";
-import Container from "./components/Container/Container";
+import Layout from "./components/Layout/Layout"
 
 function App() {
   const [userName, setUserName] = useState(null);
 
   return (
     <Router>
-      <Container>
+      <Layout>
         <Routes>
           <Route path="/" element={<Home userName={userName} setUserName={setUserName} />} />
           <Route path="/login" element={<Login setUserName={setUserName} />} />
@@ -25,7 +25,7 @@ function App() {
           <Route path="/quiz" element={<QuizPage userName={userName} />} />
           <Route path="/quizzes" element={<Quizzes />} />
         </Routes>
-      </Container>
+      </Layout>
     </Router>
   );
 }
