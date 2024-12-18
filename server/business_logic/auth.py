@@ -2,6 +2,7 @@ import os
 import jwt
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, jsonify
 from dotenv import load_dotenv
 from data.database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email
 
@@ -74,3 +75,21 @@ def decode_token(token):
         return None, {'error': 'Token has expired.'}
     except jwt.InvalidTokenError:
         return None, {'error': 'Invalid token.'}
+    
+
+def token_required(f):
+    def wrapper(*args, **kwargs):
+        token = request.cookies.get('token')
+        
+        if not token:
+            return jsonify({'error': 'Token is missing.'}), 401
+        
+        user_id, error = decode_token(token)
+    
+        if error:
+            return jsonify(error), 401
+        
+        return f(user_id, *args, **kwargs)
+        
+    wrapper.__name__ = f.__name__
+    return wrapper
