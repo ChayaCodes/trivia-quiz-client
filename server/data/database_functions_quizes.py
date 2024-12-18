@@ -141,6 +141,19 @@ def get_user_by_email(email):
     finally:
         data_conn.close()
 
+def get_user_by_username(name):
+    try:
+        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_conn.row_factory = sqlite3.Row
+        data_cursor = data_conn.cursor()
+        data_cursor.execute("SELECT * FROM users WHERE name = ?", (name,))
+        row = data_cursor.fetchone()
+        if row:
+            return dict(row)
+        return None
+    finally:
+        data_conn.close()
+
 def update_user(id, name=None, email=None, password=None):
     try:
         data_conn = sqlite3.connect(DATABASE_NAME)
