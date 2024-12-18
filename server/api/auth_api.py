@@ -4,8 +4,6 @@ from business_logic.auth import register_user, login_user, decode_token
 from data.database_functions_quizes import get_user, create_user
 import dotenv
 
-
-
 # Load environment variables
 dotenv.load_dotenv()
 
@@ -29,7 +27,7 @@ auth_api = Blueprint('auth_api', __name__)
 @auth_api.route('/auth/register', methods=['POST'])
 def api_register():
     data = request.get_json()
-    name = data.get('name')
+    name = data.get('username')
     email = data.get('email')
     password = data.get('password')
     
@@ -37,22 +35,28 @@ def api_register():
         return jsonify({'error': 'Missing required fields.'}), 400
     
     response, status = register_user(name, email, password)
+    if status == 201:
+        token = response.get('token')
+        resp = make_response(jsonify({'message': 'Login successful.'}), status)
+        resp.set_cookie('token', token, httponly=True, samesite='Strict')
+        return resp
     return jsonify(response), status
+
 
 @auth_api.route('/auth/login', methods=['POST'])
 def api_login():
     data = request.get_json()
-    email = data.get('email')
+    username = data.get('username')
     password = data.get('password')
     print(data)
-    if not email or not password:
-        return jsonify({'error': 'Missing email or password.'}), 400
+    if not username or not password:
+        return jsonify({'error': 'Missing username or password.'}), 400
     
-    response, status = login_user(email, password)
+    response, status = login_user(username, password)
     if status == 200:
         token = response.get('token')
         resp = make_response(jsonify({'message': 'Login successful.'}), status)
-        resp.set_cookie('token', token, httponly=True, secure=True, samesite='Strict')
+        resp.set_cookie('token', token, httponly=True, samesite='Strict')
         return resp
     return jsonify(response), status
 
@@ -66,7 +70,7 @@ def api_logout(user_id):
 @auth_api.route('/auth/me', methods=['GET'])
 @token_required
 def api_me(user_id):
-    user = get_user_by_id(user_id)
+    user = get_user_by_id(user_id) # type: ignore
     if not user:
         return jsonify({'error': 'User not found.'}), 404
     
