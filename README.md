@@ -105,7 +105,9 @@ export default ExampleComponent;
 
 ### Authentication
 - **Register User**: `POST /auth/register`
+fields: `username`, `password`, `email`
 - **Login User**: `POST /auth/login`
+fields: `email`, `password`
 - **Logout User**: `POST /auth/logout`
 - **Get Current User**: `GET /auth/me`
 

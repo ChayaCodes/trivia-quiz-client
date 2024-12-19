@@ -1,34 +1,24 @@
-import React, { useState, useEffect } from "react";
-import "./Quizzes.css";
+import React, { useState, useEffect } from 'react';
+import api from '../../api/axiosSetup';
+import './Quizzes.css';
 
-function Quizzes() {
-  const [quizzes, setQuizzes] = useState([]);
-  const [hoveredButton, setHoveredButton] = useState(null);
+const Quizzes = () => {
+    const [quizzes, setQuizzes] = useState([]);
+    const [hoveredButton, setHoveredButton] = useState(null);
 
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      const data = [
-        {
-          id: 1,
-          title: "החידון הראשון",
-          description: "חידון ראשון עם תיאור קצר",
-        },
-        {
-          id: 2,
-          title: "החידון השני",
-          description: "חידון שני עם תיאור קצר",
-        },
-        {
-          id: 3,
-          title: "החידון השלישי",
-          description: "חידון שלישי עם תיאור קצר",
-        },
-      ];
-      setQuizzes(data);
-    };
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            try {
+                const response = await api.get('/admin/view_quizzes');
+                setQuizzes(response.data.quizzes);  
+                console.log('Quizzes:', response.data.quizzes);
+            } catch (error) {
+                console.error('Error fetching quizzes:', error);
+            }
+        };
 
-    fetchQuizzes();
-  }, []);
+        fetchQuizzes();
+    }, []);
 
   return (
     <div>
@@ -36,7 +26,7 @@ function Quizzes() {
       <ul className="quiz-list">
         {quizzes.map((quiz) => (
           <li className="quiz-item" key={quiz.id}>
-            <h2>{quiz.title}</h2>
+            <h2>{quiz.name}</h2>
             <p>{quiz.description}</p>
             <div className="buttons">
               <div
