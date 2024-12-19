@@ -183,15 +183,22 @@ def create_quiz(id, name, user_id):
         data_conn = sqlite3.connect(DATABASE_NAME)
         data_cursor = data_conn.cursor()
         data_cursor.execute("""
-            INSERT INTO quizzes (id, name, user_id, status) VALUES (?, ?, ?, 'active')
+            INSERT INTO quizzes (id, name, user_id, status) VALUES (?, ?, ?, 'inactive')
         """, (id, name, user_id))
         data_conn.commit()
     finally:
         data_conn.close()
 
-def get_quiz(id):
+def get_quiz(id: str) -> dict:
+    """
+    Retrieves quiz details by ID.
+
+    :param id: מזהה החידון.
+    :return: מילון עם פרטי החידון או None אם לא נמצא.
+    """
+    data_conn = None
     try:
-        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_conn = sqlite3.connect(os.getenv('DATABASE_NAME'))
         data_conn.row_factory = sqlite3.Row
         data_cursor = data_conn.cursor()
         data_cursor.execute("SELECT * FROM quizzes WHERE id = ?", (id,))
@@ -199,8 +206,11 @@ def get_quiz(id):
         if row:
             return dict(row)
         return None
+    except sqlite3.Error as e:
+        return {}
     finally:
-        data_conn.close()
+        if data_conn:
+            data_conn.close()
 
 def update_quiz(id, name=None, user_id=None, status=None, current_question_id=None, question_start_time=None):
     try:
@@ -238,6 +248,19 @@ def create_question(id, quiz_id, question_text):
             INSERT INTO questions (id, quiz_id, question_text) VALUES (?, ?, ?)
         """, (id, quiz_id, question_text))
         data_conn.commit()
+    finally:
+        data_conn.close()
+
+def get_question(id):
+    try:
+        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_conn.row_factory = sqlite3.Row
+        data_cursor = data_conn.cursor()
+        data_cursor.execute("SELECT * FROM questions WHERE id = ?", (id,))
+        row = data_cursor.fetchone()
+        if row:
+            return dict(row)
+        return None
     finally:
         data_conn.close()
 
@@ -399,6 +422,17 @@ def get_quizzes_by_user(user_id):
         data_conn.row_factory = sqlite3.Row
         data_cursor = data_conn.cursor()
         data_cursor.execute("SELECT * FROM quizzes WHERE user_id = ?", (user_id,))
+        rows = data_cursor.fetchall()
+        return [dict(row) for row in rows]
+    finally:
+        data_conn.close()
+
+def get_all_participants(quiz_id):
+    try:
+        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_conn.row_factory = sqlite3.Row
+        data_cursor = data_conn.cursor()
+        data_cursor.execute("SELECT * FROM participants WHERE quiz_id = ?", (quiz_id,))
         rows = data_cursor.fetchall()
         return [dict(row) for row in rows]
     finally:

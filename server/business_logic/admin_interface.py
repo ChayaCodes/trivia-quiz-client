@@ -12,6 +12,7 @@ from data.database_functions_quizes import (
     get_participant_answers,
     get_current_active_question,
     get_quizzes_by_user,
+    get_all_participants,
     
 )
 import time
@@ -31,9 +32,16 @@ def create_new_quiz(title, user_id, questions):
         quiz_id = generate_unique_quiz_id()
         create_quiz(quiz_id, title, user_id)
         for question in questions:
-            q_text = question.get('question_text')
+            q_text = question.get('question')
             answers = question.get('answers')
             correct_option = question.get('correctAnswer')
+            if not q_text:
+                return {'error': 'Question text is required.'}, 400
+            if not answers:
+                return {'error': 'Answers are required for each question.'}, 400
+            if not correct_option:
+                return {'error': 'Correct answer is required for each question.'}, 400
+            
             question_id = generate_unique_question_id()
             create_question(question_id, quiz_id, q_text)
             for idx, answer_text in enumerate(answers, start=1):
@@ -43,6 +51,7 @@ def create_new_quiz(title, user_id, questions):
 
         return {'message': 'חידון נוצר בהצלחה.', 'quiz_id': quiz_id}, 201
     except Exception as e:
+        print("Error in create_new_quiz:", str(e))
         return {'error': 'שגיאה ביצירת החידון.'}, 500
 
 
@@ -119,27 +128,39 @@ def go_to_next_question(quiz_id):
     return {'message': 'Moved to next question.'}, 200
 
 
-def get_quiz_statistics(quiz_id, user_id):
+def get_quiz_statistics(quiz_id: str, user_id: str) -> tuple:
     """
-    Retrieves statistics for a specific quiz.
+    Retrieves statistics for a given quiz, including participants and their answers.
+
+    :param quiz_id: מזהה החידון.
+    :param user_id: מזהה המשתמש המבקש את הסטטיסטיקות.
+    :return: Tuple עם מילון סטטיסטיקות וקוד סטטוס HTTP.
     """
-    quiz = get_quiz(quiz_id)
-    if not quiz:
-        return {'error': 'Quiz not found.'}, 404
+    try:
+        participants = get_all_participants(quiz_id)  # קריאה לפונקציה הנכונה
+        quiz = get_quiz(quiz_id)
 
-    # Fetch participants and their answers
-    participants = get_all_participants(quiz_id)
-    stats = []
-    for participant in participants:
-        answers = get_participant_answers(participant['phone_number'])
-        score = calculate_score(answers)
-        stats.append({
-            'phone_number': participant['phone_number'],
-            'score': score
-        })
-    return {'statistics': stats}, 200
+        if not quiz:
+            return {'error': 'חידון לא נמצא.'}, 404
 
-def get_all_participants(quiz_id):
+        statistics = {
+            'quiz_id': quiz_id,
+            'title': quiz.get('name'),
+            'status': quiz.get('status'),
+            'participants_count': len(participants),
+            'participants': participants
+        }
+
+        return {'statistics': statistics}, 200
+
+    except sqlite3.Error as e:
+        return {'error': 'שגיאה במסד הנתונים.'}, 500
+
+    except Exception as e:
+        print("Error in get_quiz_statistics:", str(e))
+        return {'error': 'שגיאה בשרת.'}, 500
+
+def get_participants(quiz_id):
     """
     Retrieves all participants for a given quiz.
     """
