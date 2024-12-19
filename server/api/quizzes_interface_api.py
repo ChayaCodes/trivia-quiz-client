@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
-from ..business_logic.auth import decode_token
-from ..business_logic.admin_interface import (
+from business_logic.auth import decode_token
+from business_logic.admin_interface import (
     create_new_quiz,
     edit_quiz,
     activate_quiz,
@@ -9,32 +9,13 @@ from ..business_logic.admin_interface import (
 )
 import dotenv
 
+from api.auth_api import token_required
+
 quizzes_interface_api = Blueprint('admin_api', __name__)
 
 # Load environment variables
 dotenv.load_dotenv()
 
-def token_required(f):
-    def wrapper(*args, **kwargs):
-        token = None
-        if 'Authorization' in request.headers:
-            auth_header = request.headers['Authorization']
-            parts = auth_header.split()
-            if len(parts) == 2 and parts[0] == 'Bearer':
-                token = parts[1]
-        
-        if not token:
-            return jsonify({'error': 'Token is missing.'}), 401
-        
-        user_id, error = decode_token(token)
-
-        if error:
-            return jsonify(error), 401
-        
-        return f(user_id, *args, **kwargs)
-    
-    wrapper.__name__ = f.__name__
-    return wrapper
 
 @quizzes_interface_api.route('/admin/create_quiz', methods=['POST'])
 @token_required

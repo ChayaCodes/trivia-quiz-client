@@ -1,8 +1,8 @@
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import "./Container.css";
+import "./Layout.css";
 
-function Container({ children }) {
+function Layout({ children }) {
   return (
     <>
       <div className="container">
@@ -19,4 +19,4 @@ function Container({ children }) {
   );
 }
 
-export default Container;
+export default Layout;

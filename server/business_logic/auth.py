@@ -2,8 +2,9 @@ import os
 import jwt
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import request, jsonify
 from dotenv import load_dotenv
-from ..data.database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email
+from data.database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email, get_user_by_username
 
 load_dotenv()
 
@@ -20,16 +21,29 @@ def register_user(name, email, password):
     :param password: User's password
     :return: Success or error message
     """
-    existing_user = get_user(email)
-    if existing_user:
-        return {'error': 'User already exists.'}, 400
-    
-    hashed_password = generate_password_hash(password)
-    user_id = generate_unique_user_id()
-    create_user(user_id, name, email, hashed_password)
-    return {'message': 'User registered successfully.'}, 201
+    try:
+        existing_user = get_user(email)
+        if existing_user:
+            return {'error': 'User already exists.'}, 400
+        
+        hashed_password = generate_password_hash(password)
+        user_id = generate_unique_user_id()
 
-def login_user(email, password):
+        create_user(user_id, name, email, hashed_password)
+
+        user = get_user_by_username(name)
+        if not user:
+            raise Exception("User not found after creation.")
+
+        token = generate_token(user['id'])
+
+        return {'message': 'User registered successfully.', 'token': token}, 201
+
+    except Exception as e:
+        return {'error': str(e)}, 500
+
+
+def login_user(name_or_email, password):
     """
     Authenticates a user and returns a JWT token.
     
@@ -37,7 +51,9 @@ def login_user(email, password):
     :param password: User's password
     :return: JWT token or error message
     """
-    user = get_user_by_email(email)
+    user = get_user_by_username(name_or_email)
+    if not user:
+        user = get_user_by_email(name_or_email)
     
     if not user or not check_password_hash(user['password'], password):
         return {'error': 'Invalid credentials.'}, 401
@@ -74,3 +90,21 @@ def decode_token(token):
         return None, {'error': 'Token has expired.'}
     except jwt.InvalidTokenError:
         return None, {'error': 'Invalid token.'}
+    
+
+def token_required(f):
+    def wrapper(*args, **kwargs):
+        token = request.cookies.get('token')
+        
+        if not token:
+            return jsonify({'error': 'Token is missing.'}), 401
+        
+        user_id, error = decode_token(token)
+    
+        if error:
+            return jsonify(error), 401
+        
+        return f(user_id, *args, **kwargs)
+        
+    wrapper.__name__ = f.__name__
+    return wrapper
