@@ -1,31 +1,16 @@
-.container {
-    display: flex;
-    flex-direction: row;
-    max-height: 100vh;
-    margin: 0;
-    width: 100vw;
-        gap: 20px;
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.sidebar {
-    width: 5vw;
-    height: 80vh;
+.container {
+  display: flex;
+  flex: 1;
 }
 
 .content {
-    width: 80vw;
-    overflow-y: auto;
-}
-
-.footer {
-    background-color: #1a1a2e;
-    color: #ffffff;
-    text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    font-size: 14px;
-    font-family: 'CustomFont', sans-serif;
-    height: 20px;    
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }

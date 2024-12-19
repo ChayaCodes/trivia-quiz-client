@@ -15,22 +15,69 @@ import time
 import sqlite3
 import os
 
-def create_new_quiz(name, user_id, questions):
+import sqlite3
+
+DB_NAME = 'quizzes_data.db'
+
+
+def create_new_quiz(title, user_id, questions):
     """
-    Creates a new quiz with questions and multiple correct options.
+    Creates a new quiz with questions and single correct answer.
     """
-    quiz_id = generate_unique_quiz_id()
-    create_quiz(quiz_id, name, user_id)
-    for question in questions:
-        q_text = question.get('question_text')
-        options = question.get('options')
-        correct_options = question.get('correct_options')  # This should be a list of option indices (1-based)
-        question_id = generate_unique_question_id()
-        create_question(question_id, quiz_id, q_text)
-        for idx, option_text in enumerate(options, start=1):
-            is_correct = idx in correct_options
-            create_option(question_id, option_text, is_correct)
-    return {'message': 'Quiz created successfully.', 'quiz_id': quiz_id}, 201
+    try:
+        # התחברות למסד הנתונים
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+
+        # יצירת ID ייחודי לחידון
+        quiz_id = generate_unique_quiz_id()
+
+        # הכנסת החידון לטבלה הראשית
+        cursor.execute("""
+            INSERT INTO quizzes (id, name, user_id, status) 
+            VALUES (?, ?, ?, 'active')
+        """, (quiz_id, title, user_id))
+
+        # הכנסת השאלות והתשובות לטבלאות המתאימות
+        for q in questions:
+            q_text = q.get('question')
+            answers = q.get('answers')  # מערך של מחרוזות
+            correct_answer = q.get('correctAnswer')  # מחרוזת
+
+            # בדיקה שהשאלה כוללת תשובה נכונה בתוך אפשרויות התשובות
+            if correct_answer not in answers:
+                conn.close()
+                return {'error': f'תשובה נכונה "{correct_answer}" אינה קיימת באפשרויות התשובות לשאלה "{q_text}".'}, 400
+
+            # יצירת ID ייחודי לשאלה
+            question_id = generate_unique_question_id()
+
+            # הכנסת השאלה לטבלה ללא `correct_answer`
+            cursor.execute("""
+                INSERT INTO questions (id, quiz_id, question_text)
+                VALUES (?, ?, ?)
+            """, (question_id, quiz_id, q_text))
+
+            # הכנסת התשובות לטבלה עם הגדרת `is_correct`
+            for answer_text in answers:
+                is_correct = 1 if answer_text == correct_answer else 0
+                cursor.execute("""
+                    INSERT INTO options (question_id, option_text, is_correct)
+                    VALUES (?, ?, ?)
+                """, (question_id, answer_text, is_correct))
+
+        # אישור השינויים וסגירת החיבור
+        conn.commit()
+        conn.close()
+
+        return {'message': 'חידון נוצר בהצלחה.', 'quiz_id': quiz_id}, 201
+    except sqlite3.Error as e:
+        print("Database error in create_new_quiz:", e)
+        return {'error': 'שגיאה במסד הנתונים.'}, 500
+    except Exception as e:
+        print("Error in create_new_quiz:", e)
+        return {'error': 'שגיאה ביצירת החידון.'}, 500
+
 
 def view_quizzes(user_id):
     """
@@ -168,3 +215,10 @@ def calculate_score(answers):
                 first_correct[q_id] += 1
                 score += 5
     return score
+
+
+def get_user_by_id(user_id):
+    """
+    Retrieves a user by ID.
+    """
+    return get_user(user_id)

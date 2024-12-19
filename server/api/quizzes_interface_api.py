@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify, Blueprint
-from business_logic.auth import decode_token
+from flask import Blueprint, request, jsonify
+from flask_cors import CORS
 from business_logic.admin_interface import (
     create_new_quiz,
     edit_quiz,
@@ -13,22 +13,32 @@ from api.auth_api import token_required
 
 quizzes_interface_api = Blueprint('admin_api', __name__)
 
+CORS(quizzes_interface_api, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+
 # Load environment variables
 dotenv.load_dotenv()
-
 
 @quizzes_interface_api.route('/admin/create_quiz', methods=['POST'])
 @token_required
 def api_create_quiz(user_id):
-    data = request.get_json()
-    name = data.get('name')
-    questions = data.get('questions')
-    
-    if not name or not questions:
-        return jsonify({'error': 'Missing required fields.'}), 400
-    
-    response, status = create_new_quiz(name=name, user_id=user_id, questions=questions)
-    return jsonify(response), status
+    try:
+        data = request.get_json()
+        print("Received quiz data:", data)  # הדפס נתונים ללוג
+
+        title = data.get('title')
+        questions = data.get('questions')
+
+
+        if not title or not questions:
+            print("Missing title or questions")
+            return jsonify({'error': 'שדות חובה חסרים.'}), 400
+
+        # ודא ש-create_new_quiz מקבל את כל הפרמטרים הנדרשים
+        response, status = create_new_quiz(title, user_id, questions)
+        return jsonify(response), status
+    except Exception as e:
+        print("Error in api_create_quiz:", str(e))
+        return jsonify({'error': 'שגיאה בשרת.'}), 500
 
 @quizzes_interface_api.route('/admin/edit_quiz/<quiz_id>', methods=['PUT'])
 @token_required

@@ -1,110 +1,175 @@
 import os
 import jwt
 import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 from flask import request, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from data.database_functions_quizes import get_user, create_user, generate_unique_user_id, get_user_by_email, get_user_by_username
+from data.database_functions_quizes import (
+    get_user_by_email,
+    create_user,
+    generate_unique_user_id,
+)
 
 load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key_here')
 ALGORITHM = 'HS256'
-TOKEN_EXPIRATION_MINUTES = 30
+ACCESS_TOKEN_EXPIRATION_MINUTES = 15
+REFRESH_TOKEN_EXPIRATION_DAYS = 7
 
-def register_user(name, email, password):
+def register_user(username, email, password):
     """
     Registers a new user with a hashed password.
-    
-    :param name: User's name
+
+    :param username: User's name
     :param email: User's email
     :param password: User's password
     :return: Success or error message
     """
-    try:
-        existing_user = get_user(email)
-        if existing_user:
-            return {'error': 'User already exists.'}, 400
-        
-        hashed_password = generate_password_hash(password)
-        user_id = generate_unique_user_id()
+    existing_user = get_user_by_email(email)
+    if existing_user:
+        return {'error': 'User already exists.'}, 400
 
-        create_user(user_id, name, email, hashed_password)
+    user_id = generate_unique_user_id()
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')  # עדכון כאן
+    create_user(user_id, username, email, hashed_password)
 
-        user = get_user_by_username(name)
-        if not user:
-            raise Exception("User not found after creation.")
+    return {'message': 'User registered successfully.'}, 201
 
-        token = generate_token(user['id'])
-
-        return {'message': 'User registered successfully.', 'token': token}, 201
-
-    except Exception as e:
-        return {'error': str(e)}, 500
-
-
-def login_user(name_or_email, password):
+def login_user(email, password):
     """
-    Authenticates a user and returns a JWT token.
-    
+    Authenticates a user and returns JWT tokens.
+
     :param email: User's email
     :param password: User's password
-    :return: JWT token or error message
+    :return: JWT access and refresh tokens or error message
     """
-    user = get_user_by_username(name_or_email)
+    user = get_user_by_email(email)
     if not user:
-        user = get_user_by_email(name_or_email)
-    
-    if not user or not check_password_hash(user['password'], password):
-        return {'error': 'Invalid credentials.'}, 401
-    
-    token = generate_token(user['id'])
-    return {'message': 'Login successful.', 'token': token}, 200
+        return {'error': 'User does not exist.'}, 404
 
-def generate_token(user_id):
+    if not check_password_hash(user['password'], password):
+        return {'error': 'Incorrect password.'}, 401
+
+    access_token = generate_access_token(user['id'])
+    refresh_token = generate_refresh_token(user['id'])
+
+    return {'access_token': access_token, 'refresh_token': refresh_token}, 200
+
+
+
+def generate_access_token(user_id):
     """
-    Generates a JWT token for a given user ID.
-    
-    :param user_id: User's unique identifier
-    :return: JWT token as a string
+    Generates a JWT access token.
+
+    :param user_id: ID of the user
+    :return: JWT access token as a string
     """
-    expiration = datetime.datetime.utcnow() + datetime.timedelta(minutes=TOKEN_EXPIRATION_MINUTES)
     payload = {
         'user_id': user_id,
-        'exp': expiration
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRATION_MINUTES),
+        'type': 'access'
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return token
+
+def generate_refresh_token(user_id):
+    """
+    Generates a JWT refresh token.
+
+    :param user_id: ID of the user
+    :return: JWT refresh token as a string
+    """
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=REFRESH_TOKEN_EXPIRATION_DAYS),
+        'type': 'refresh'
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
 def decode_token(token):
     """
-    Decodes a JWT token to retrieve the user ID.
-    
+    Decodes a JWT token.
+
     :param token: JWT token
-    :return: User ID or error message
+    :return: Decoded payload or error
     """
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload['user_id'], None
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return decoded, None
     except jwt.ExpiredSignatureError:
-        return None, {'error': 'Token has expired.'}
+        return None, 'Token has expired.'
     except jwt.InvalidTokenError:
-        return None, {'error': 'Invalid token.'}
-    
+        return None, 'Invalid token.'
 
 def token_required(f):
-    def wrapper(*args, **kwargs):
-        token = request.cookies.get('token')
-        
+    """
+    Decorator that ensures the user has a valid access JWT token.
+    The token is expected to be sent via cookies.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.cookies.get('access_token')
+
         if not token:
-            return jsonify({'error': 'Token is missing.'}), 401
-        
-        user_id, error = decode_token(token)
-    
+            return jsonify({'error': 'Access token is missing.'}), 401
+
+        decoded, error = decode_token(token)
         if error:
-            return jsonify(error), 401
-        
+            return jsonify({'error': error}), 401
+
+        if decoded.get('type') != 'access':
+            return jsonify({'error': 'Invalid token type.'}), 401
+
+        user_id = decoded.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'Token is invalid.'}), 401
+
         return f(user_id, *args, **kwargs)
-        
-    wrapper.__name__ = f.__name__
-    return wrapper
+    
+    return decorated
+
+def refresh_token_required(f):
+    """
+    Decorator that ensures the user has a valid refresh JWT token.
+    The token is expected to be sent via cookies.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.cookies.get('refresh_token')
+
+        if not token:
+            return jsonify({'error': 'Refresh token is missing.'}), 401
+
+        decoded, error = decode_token(token)
+        if error:
+            return jsonify({'error': error}), 401
+
+        if decoded.get('type') != 'refresh':
+            return jsonify({'error': 'Invalid token type.'}), 401
+
+        user_id = decoded.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'Token is invalid.'}), 401
+
+        return f(user_id, *args, **kwargs)
+    
+    return decorated
+
+
+def get_user_id_from_token(token):
+    """
+    Extracts the user ID from a JWT token.
+
+    :param token: JWT token
+    :return: User ID or None
+    """
+    decoded, error = decode_token(token)
+    if error:
+        return None
+
+    return decoded.get('user_id')
+
+
