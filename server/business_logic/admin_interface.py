@@ -5,11 +5,14 @@ from data.database_functions_quizes import (
     delete_quiz,
     create_question,
     get_user,
-    get_question,
+    get_questions,
     generate_unique_question_id,
     generate_unique_quiz_id,
     create_option,
-    get_participant_answers
+    get_participant_answers,
+    get_current_active_question,
+    get_quizzes_by_user,
+    
 )
 import time
 import sqlite3
@@ -25,57 +28,21 @@ def create_new_quiz(title, user_id, questions):
     Creates a new quiz with questions and single correct answer.
     """
     try:
-        # התחברות למסד הנתונים
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-
-        # יצירת ID ייחודי לחידון
         quiz_id = generate_unique_quiz_id()
-
-        # הכנסת החידון לטבלה הראשית
-        cursor.execute("""
-            INSERT INTO quizzes (id, name, user_id, status) 
-            VALUES (?, ?, ?, 'active')
-        """, (quiz_id, title, user_id))
-
-        # הכנסת השאלות והתשובות לטבלאות המתאימות
-        for q in questions:
-            q_text = q.get('question')
-            answers = q.get('answers')  # מערך של מחרוזות
-            correct_answer = q.get('correctAnswer')  # מחרוזת
-
-            # בדיקה שהשאלה כוללת תשובה נכונה בתוך אפשרויות התשובות
-            if correct_answer not in answers:
-                conn.close()
-                return {'error': f'תשובה נכונה "{correct_answer}" אינה קיימת באפשרויות התשובות לשאלה "{q_text}".'}, 400
-
-            # יצירת ID ייחודי לשאלה
+        create_quiz(quiz_id, title, user_id)
+        for question in questions:
+            q_text = question.get('question_text')
+            answers = question.get('answers')
+            correct_option = question.get('correctAnswer')
             question_id = generate_unique_question_id()
-
-            # הכנסת השאלה לטבלה ללא `correct_answer`
-            cursor.execute("""
-                INSERT INTO questions (id, quiz_id, question_text)
-                VALUES (?, ?, ?)
-            """, (question_id, quiz_id, q_text))
-
-            # הכנסת התשובות לטבלה עם הגדרת `is_correct`
-            for answer_text in answers:
-                is_correct = 1 if answer_text == correct_answer else 0
-                cursor.execute("""
-                    INSERT INTO options (question_id, option_text, is_correct)
-                    VALUES (?, ?, ?)
-                """, (question_id, answer_text, is_correct))
-
-        # אישור השינויים וסגירת החיבור
-        conn.commit()
-        conn.close()
+            create_question(question_id, quiz_id, q_text)
+            for idx, answer_text in enumerate(answers, start=1):
+                is_correct = (idx == correct_option)
+                create_option(question_id, answer_text, answer_text == correct_option)
+        
 
         return {'message': 'חידון נוצר בהצלחה.', 'quiz_id': quiz_id}, 201
-    except sqlite3.Error as e:
-        print("Database error in create_new_quiz:", e)
-        return {'error': 'שגיאה במסד הנתונים.'}, 500
     except Exception as e:
-        print("Error in create_new_quiz:", e)
         return {'error': 'שגיאה ביצירת החידון.'}, 500
 
 
@@ -87,15 +54,11 @@ def view_quizzes(user_id):
     if not user:
         return {'error': 'User not found.'}, 404
     try:
-        data_conn = sqlite3.connect(os.getenv('DATABASE_NAME'))
-        data_conn.row_factory = sqlite3.Row
-        data_cursor = data_conn.cursor()
-        data_cursor.execute("SELECT * FROM quizzes WHERE user_id = ?", (user_id,))
-        rows = data_cursor.fetchall()
-        quizzes = [dict(row) for row in rows]
+        quizzes = get_quizzes_by_user(user_id)
         return {'quizzes': quizzes}, 200
-    finally:
-        data_conn.close()
+    except Exception as e:
+        return {'error': 'שגיאה בשרת.'}, 500
+    
 
 def edit_quiz(quiz_id, user_id, name=None, questions=None):
     """
@@ -124,7 +87,13 @@ def activate_quiz(quiz_id, user_id):
     quiz = get_quiz(quiz_id)
     if not quiz:
         return {'error': 'Quiz not found.'}, 404
-    update_quiz(quiz_id, status='active')
+    quiz_questions = get_questions(quiz_id)
+    if not quiz_questions or len(quiz_questions) < 1:
+        return {'error': 'Quiz must have at least one question.'}, 400
+    first_question_id = quiz_questions[0].get('id')
+
+    update_quiz(quiz_id, status='active', current_question_id=first_question_id, question_start_time=int(time.time()))
+
     return {'message': 'Quiz activated successfully.'}, 200
 
 def go_to_next_question(quiz_id):
@@ -134,33 +103,21 @@ def go_to_next_question(quiz_id):
     quiz = get_quiz(quiz_id)
     if not quiz:
         return {'error': 'Quiz not found.'}, 404
-
-    current_question_id = quiz['current_question_id']
-    data_conn = sqlite3.connect(os.getenv('DATABASE_NAME'))
-    data_cursor = data_conn.cursor()
-    data_cursor.execute("""
-        SELECT id FROM questions WHERE quiz_id = ? ORDER BY id
-    """, (quiz_id,))
-    questions = data_cursor.fetchall()
-    question_ids = [q[0] for q in questions]
-
-    if current_question_id and current_question_id in question_ids:
-        current_index = question_ids.index(current_question_id)
-        next_index = current_index + 1
-        if next_index < len(question_ids):
-            next_question_id = question_ids[next_index]
-        else:
-            next_question_id = None
-    else:
-        next_question_id = question_ids[0] if question_ids else None
-
-    update_quiz(quiz_id, current_question_id=next_question_id, question_start_time=int(time.time()) if next_question_id else None)
-
-    if not next_question_id:
-        update_quiz(quiz_id, status='inactive')
-
-    data_conn.close()
+    quiz_questions = get_questions(quiz_id)
+    if not quiz_questions:
+        return {'error': 'No questions found for this quiz.'}, 404
+    current_question_id = quiz.get('current_question_id')
+    if not current_question_id:
+        return {'error': 'No active question for this quiz.'}, 400
+    question_ids = [q.get('id') for q in quiz_questions]
+    current_question_index = question_ids.index(current_question_id)
+    if current_question_index == len(question_ids) - 1:
+        update_quiz(quiz_id, status='completed')
+        return {'message': 'Quiz completed.'}, 200
+    next_question_id = question_ids[current_question_index + 1]
+    update_quiz(quiz_id, current_question_id=next_question_id, question_start_time=int(time.time()))
     return {'message': 'Moved to next question.'}, 200
+
 
 def get_quiz_statistics(quiz_id, user_id):
     """
@@ -186,15 +143,13 @@ def get_all_participants(quiz_id):
     """
     Retrieves all participants for a given quiz.
     """
-    try:
-        conn = sqlite3.connect(os.getenv('DATABASE_NAME'))
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        cursor.execute("SELECT phone_number FROM participants WHERE quiz_id = ?", (quiz_id,))
-        rows = cursor.fetchall()
-        return [{'phone_number': row['phone_number']} for row in rows]
-    finally:
-        conn.close()
+    quiz = get_quiz(quiz_id)
+    if not quiz:
+        return {'error': 'Quiz not found.'}, 404
+    participants = get_all_participants(quiz_id)
+    return participants
+
+    
 
 def calculate_score(answers):
     """
@@ -222,3 +177,13 @@ def get_user_by_id(user_id):
     Retrieves a user by ID.
     """
     return get_user(user_id)
+
+
+def get_current_active_question(quiz_id):
+    """
+    Retrieves the current active question for a quiz.
+    """
+    return get_current_active_question(quiz_id)
+    
+
+

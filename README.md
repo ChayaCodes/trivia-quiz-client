@@ -100,24 +100,36 @@ function ExampleComponent() {
 export default ExampleComponent;
 ```
 
-
 ## API Endpoints
 
 ### Authentication
-- **Register User**: `POST /auth/register`
-fields: `username`, `password`, `email`
-- **Login User**: `POST /auth/login`
-fields: `email`, `password`
+- **Register User**: `POST /auth/register`  
+  **Fields**: `username`, `password`, `email`
+  
+- **Login User**: `POST /auth/login`  
+  **Fields**: `email`, `password`
+  
 - **Logout User**: `POST /auth/logout`
+
 - **Get Current User**: `GET /auth/me`
 
 ### Quiz Management
 - **Create Quiz**: `POST /admin/create_quiz`
+**Fields**: `title`, `questions` (array of objects with `question`, `answers` (array of strings), `correct_answer`)
+
 - **Edit Quiz**: `PUT /admin/edit_quiz/<quiz_id>`
+**Fields**: `title`, `questions` (array of objects with `question`, `answers` (array of strings), `correct_answer`)
+
 - **Activate Quiz**: `POST /admin/activate_quiz/<quiz_id>`
+
 - **View Quizzes**: `GET /admin/view_quizzes`
+
 - **Quiz Statistics**: `GET /admin/quiz_statistics/<quiz_id>`
 
+- **Get Current Active Question**: `GET /admin/get_current_question/<quiz_id>`  
+
+- **Go To Next Question**: `POST /admin/go_to_next_question/<quiz_id>`
+  
 ### Quiz Service - Phone Interface
 The phone interface utilizes the Azran interface. You can find the documentation here: [Azran Interface Documentation](https://www.hazran.online/FreeArena/content/instructions).
 

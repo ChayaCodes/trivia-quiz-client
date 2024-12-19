@@ -241,7 +241,7 @@ def create_question(id, quiz_id, question_text):
     finally:
         data_conn.close()
 
-def get_question(id):
+def get_questions(id):
     try:
         data_conn = sqlite3.connect(DATABASE_NAME)
         data_conn.row_factory = sqlite3.Row
@@ -376,5 +376,30 @@ def delete_participant_answer(participant_phone, question_id):
         data_cursor = data_conn.cursor()
         data_cursor.execute("DELETE FROM answers WHERE phone_number = ? AND question_id = ?", (participant_phone, question_id))
         data_conn.commit()
+    finally:
+        data_conn.close()
+
+
+def get_current_active_question(quiz_id):
+    try:
+        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_cursor = data_conn.cursor()
+        data_cursor.execute("SELECT current_question_id FROM quizzes WHERE id = ?", (quiz_id,))
+        row = data_cursor.fetchone()
+        if row:
+            return row[0]
+        return None
+    finally:
+        data_conn.close()
+
+
+def get_quizzes_by_user(user_id):
+    try:
+        data_conn = sqlite3.connect(DATABASE_NAME)
+        data_conn.row_factory = sqlite3.Row
+        data_cursor = data_conn.cursor()
+        data_cursor.execute("SELECT * FROM quizzes WHERE user_id = ?", (user_id,))
+        rows = data_cursor.fetchall()
+        return [dict(row) for row in rows]
     finally:
         data_conn.close()
