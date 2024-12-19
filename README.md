@@ -10,6 +10,7 @@ The Trivia Quiz Application is an interactive platform that allows users to part
 - **Scoring System**: Tracks participant scores and provides quiz statistics.
 - **Responsive Design**: Accessible on various devices with a user-friendly interface.
 
+
 ## Project Structure
 ```
 /client
@@ -62,14 +63,43 @@ The Trivia Quiz Application is an interactive platform that allows users to part
     ```sh
     python app.py
     ```
-## JWT
-In any function where you want to use the token, add
-``` { withCredentials: true } ```
-after the data you are sending.
+## JWT Authentication
 
-For example:
+The application uses JWT for authentication. To handle token refreshing seamlessly, an Axios instance with interceptors is configured.
 
-```const response = await axios.post('http://localhost:5000/auth/login', userData, { withCredentials: true}); ```
+
+### **Axios Setup**
+to use API endpoints that require authentication, you need to use the `api` instance. Here's how you can use it:
+
+```javascript
+// דוגמה לשימוש בקובץ React
+import React from 'react';
+import api from '../api/axiosSetup';
+
+function ExampleComponent() {
+    const fetchData = async () => {
+        try {
+            const response = await api.get('/some/protected/endpoint');
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    React.useEffect(() => {
+        fetchData();
+    }, []);
+
+    return (
+        <div>
+            <h1>Example Component</h1>
+        </div>
+    );
+}
+
+export default ExampleComponent;
+```
+
 
 ## API Endpoints
 
