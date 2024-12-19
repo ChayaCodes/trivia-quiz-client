@@ -1,20 +1,12 @@
-.container {
-    display: flex;
-    flex-direction: row;
-    max-height: 100vh;
-    margin: 0;
-    width: 100vw;
-        gap: 20px;
-}
-
-.sidebar {
+/* I kept the sidebar code so it can be restored if needed. */
+/* .sidebar {
     width: 5vw;
     height: 80vh;
-}
+} */
 
 .content {
-    width: 80vw;
-    overflow-y: auto;
+    width: 100vw;
+    height: 100vh;
 }
 
 .footer {
