@@ -13,6 +13,8 @@ from data.database_functions_quizes import (
     get_current_question,
     get_quizzes_by_user,
     get_all_participants,
+    get_question,
+    get_options_by_question
     
 )
 import time
@@ -218,7 +220,10 @@ def get_current_active_question(quiz_id):
     quiz = get_quiz(quiz_id)
     if not quiz:
         return {'error': 'Quiz not found.'}, 404
-    current_question = get_current_question(quiz_id)
+    current_question_id = get_current_question(quiz_id)
+    current_question = get_question(current_question_id)
+    answers = get_options_by_question(current_question_id)
+    current_question['answers'] = answers
     if not current_question:
         return {'error': 'Current question not found.'}, 404
     return {'current_question': current_question}, 200
