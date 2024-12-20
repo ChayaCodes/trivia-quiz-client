@@ -10,7 +10,7 @@ from data.database_functions_quizes import (
     generate_unique_quiz_id,
     create_option,
     get_participant_answers,
-    get_current_active_question,
+    get_current_question,
     get_quizzes_by_user,
     get_all_participants,
     
@@ -89,21 +89,32 @@ def edit_quiz(quiz_id, user_id, name=None, questions=None):
                 create_option(question_id, option_text, is_correct)
     return {'message': 'Quiz updated successfully.'}, 200
 
-def activate_quiz(quiz_id, user_id):
+def activate_quiz(quiz_id: str, user_id: str) -> tuple[dict, int]:
     """
     Activates a quiz.
     """
-    quiz = get_quiz(quiz_id)
-    if not quiz:
-        return {'error': 'Quiz not found.'}, 404
-    quiz_questions = get_questions(quiz_id)
-    if not quiz_questions or len(quiz_questions) < 1:
-        return {'error': 'Quiz must have at least one question.'}, 400
-    first_question_id = quiz_questions[0].get('id')
+    try:
+        quiz = get_quiz(quiz_id)
+        if not quiz:
+            return {'error': 'Quiz not found.'}, 404
 
-    update_quiz(quiz_id, status='active', current_question_id=first_question_id, question_start_time=int(time.time()))
+        quiz_questions = get_questions(quiz_id)
 
-    return {'message': 'Quiz activated successfully.'}, 200
+        if not quiz_questions or len(quiz_questions) < 1:
+            return {'error': 'Quiz must have at least one question.'}, 400
+
+        first_question_id = quiz_questions[0].get('id')
+
+        update_quiz(
+            id=quiz_id,
+            status='active',
+            current_question_id=first_question_id,
+            question_start_time=int(time.time())
+        )
+
+        return {'message': 'Quiz activated successfully.'}, 200
+    except Exception as e:
+        return {'error': 'שגיאה בשרת.'}, 500
 
 def go_to_next_question(quiz_id):
     """
@@ -197,14 +208,20 @@ def get_user_by_id(user_id):
     """
     Retrieves a user by ID.
     """
-    return get_user(user_id)
+    return get_user(user_id), 200
 
 
 def get_current_active_question(quiz_id):
     """
     Retrieves the current active question for a quiz.
     """
-    return get_current_active_question(quiz_id)
+    quiz = get_quiz(quiz_id)
+    if not quiz:
+        return {'error': 'Quiz not found.'}, 404
+    current_question = get_current_question(quiz_id)
+    if not current_question:
+        return {'error': 'Current question not found.'}, 404
+    return {'current_question': current_question}, 200
     
 
 
