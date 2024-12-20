@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axiosSetup';
 import './Quizzes.css';
+import { useNavigate } from 'react-router-dom';
 
 const Quizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
     const [hoveredButton, setHoveredButton] = useState(null);
-
+    const [activatingQuizId, setActivatingQuizId] = useState(null);
+    const navigate = useNavigate();
+    
     useEffect(() => {
         const fetchQuizzes = async () => {
             try {
@@ -19,6 +22,21 @@ const Quizzes = () => {
 
         fetchQuizzes();
     }, []);
+    
+    const handleActivateQuiz = async (quizId) => {
+      try {
+          setActivatingQuizId(quizId);
+          await api.post(`/admin/activate_quiz/${quizId}`);
+          navigate(`/quiz/${quizId}`);
+      } catch (error) {
+          console.error(`Error activating quiz ${quizId}:`, error);
+          alert('הפעלת החידון נכשלה. אנא נסה שוב.');
+      } finally {
+          setActivatingQuizId(null);
+      }
+  };
+  
+
 
   return (
     <div>
@@ -34,7 +52,11 @@ const Quizzes = () => {
                 onMouseEnter={() => setHoveredButton(`activate-${quiz.id}`)}
                 onMouseLeave={() => setHoveredButton(null)}
               >
-                <button className="activate-button">
+                <button 
+                className="activate-button"
+                onClick={() => handleActivateQuiz(quiz.id)}
+                
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="24"

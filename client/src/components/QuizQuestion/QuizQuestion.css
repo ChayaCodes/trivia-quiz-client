@@ -1,0 +1,39 @@
+.quiz-question {
+    background-color: #000; /* שחור */
+    color: #fff; /* לבן לטקסט */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.question-text {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.answers-list {
+    list-style: none;
+    padding: 0;
+}
+
+.answer-item {
+    background-color: #1a1a1a; /* אפור כהה */
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+
+.answer-number {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* סגנונות נוספים לפי צורך */
