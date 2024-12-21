@@ -445,19 +445,26 @@ def get_quizzes_by_user(user_id):
         data_conn = sqlite3.connect(DATABASE_NAME)
         data_conn.row_factory = sqlite3.Row
         data_cursor = data_conn.cursor()
-        data_cursor.execute("SELECT * FROM quizzes WHERE user_id = ?", (user_id,))
+        data_cursor.execute("SELECT name, id FROM quizzes WHERE user_id = ?", (user_id,))
         rows = data_cursor.fetchall()
         return [dict(row) for row in rows]
     finally:
         data_conn.close()
 
 def get_all_participants(quiz_id):
+    """
+    Retrieves all participants for a given quiz.
+    """
     try:
-        data_conn = sqlite3.connect(DATABASE_NAME)
-        data_conn.row_factory = sqlite3.Row
-        data_cursor = data_conn.cursor()
-        data_cursor.execute("SELECT * FROM participants WHERE quiz_id = ?", (quiz_id,))
-        rows = data_cursor.fetchall()
-        return [dict(row) for row in rows]
+        conn = sqlite3.connect(DATABASE_NAME)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM participants WHERE quiz_id = ?", (quiz_id,))
+        rows = cursor.fetchall()
+        participants = [dict(row) for row in rows]
+        return participants
+    except sqlite3.Error as e:
+        print(f"Database error in get_all_participants: {e}")
+        return []
     finally:
-        data_conn.close()
+        conn.close()

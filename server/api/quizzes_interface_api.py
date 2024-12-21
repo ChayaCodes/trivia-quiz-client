@@ -7,7 +7,8 @@ from business_logic.admin_interface import (
     get_quiz_statistics,
     view_quizzes,
     get_current_active_question,
-    go_to_next_question
+    go_to_next_question,
+    get_participants
 )
 import dotenv
 
@@ -84,4 +85,13 @@ def api_get_current_question(user_id, quiz_id):
 @token_required
 def api_go_to_next_question(user_id, quiz_id):
     response, status = go_to_next_question(quiz_id)
+    return jsonify(response), status
+
+
+
+# New Endpoint: Get Participants of a Quiz
+@quizzes_interface_api.route('/admin/get_participants/<quiz_id>', methods=['GET'])
+@token_required
+def api_get_participants(user_id, quiz_id):
+    response, status = get_participants(quiz_id)
     return jsonify(response), status

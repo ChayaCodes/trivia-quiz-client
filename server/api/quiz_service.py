@@ -20,7 +20,11 @@ from utils import (
     normalize_phone_number, get_similarity_results
 )
 
-from business_logic.participant_interface import add_participant, answer_current_question
+from business_logic.participant_interface import (
+    add_participant, 
+    answer_current_question,
+    get_quiz
+)
 
 quiz_service_api = Blueprint('quiz_service_api', __name__)
 
@@ -32,7 +36,7 @@ base_url="http://51.84.42.17/"
 service_data = {
     'manager_phone': manager_phone,
     'email': email,
-    'connection_url': base_url + "temporary_position_service",
+    'connection_url': base_url + "/quiz_service_service",
     'service_name': 'מערכת חידון קליקרים',
     'brief_description': 'מערכת המאפשרת להשתתף בחידון קליקרים בצורה אינטראקטיבית דרך הטלפון',
     'message': 'נא הקש את קוד החידון שמופיע על המסך',
@@ -85,6 +89,7 @@ def do_stage(stage):
 
     # קבלת השלב הבא מהמידע הגולמי או מהקריאה ל- get_call_data
     next_stage = get_call_data('next_stage')
+    print(f"next_stage: {next_stage}")
 
 
 
@@ -126,8 +131,13 @@ def start_stage():
         return send_ending_response()
 
     quiz_id = request.json.get('digits')
+    quiz = get_quiz(quiz_id)
+    print(quiz)
+    if not quiz:
+        return set_call_data('next_stage', 'start')
 
     add_participant(phone_number, quiz_id)
+    set_call_data('next_stage', 'answer')
 
 def answer_stage():
     phone_number = get_call_data('phone_number')
@@ -154,6 +164,6 @@ stages = {
             'number_of_digits': 1
         },
         'action': answer_stage,
-        'next_stage': 'start'
+        'next_stage': 'answer'
     }
 }

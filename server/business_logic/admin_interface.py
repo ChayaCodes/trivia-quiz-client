@@ -172,6 +172,7 @@ def get_quiz_statistics(quiz_id: str, user_id: str) -> tuple:
     except Exception as e:
         print("Error in get_quiz_statistics:", str(e))
         return {'error': 'שגיאה בשרת.'}, 500
+    
 
 def get_participants(quiz_id):
     """
@@ -181,7 +182,7 @@ def get_participants(quiz_id):
     if not quiz:
         return {'error': 'Quiz not found.'}, 404
     participants = get_all_participants(quiz_id)
-    return participants
+    return {'participants': participants}, 200
 
     
 
