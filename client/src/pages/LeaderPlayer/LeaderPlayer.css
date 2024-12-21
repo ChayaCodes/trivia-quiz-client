@@ -1,0 +1,203 @@
+/* רקע כללי */
+.top-players-container {
+  background-color: #1a1a2e;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* באנר עם אייקונים */
+.banner {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #00d4ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  /* background-color: rgba(26, 96, 104, 0.8); */
+  padding: 20px;
+  /* border-radius: 10px; */
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); */
+}
+
+/* תצוגת אייקון */
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+}
+
+.banner-icon {
+  width: 40px;
+  height: 40px;
+}
+
+/* רספונסיביות לבאנר */
+/* @media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+  }
+
+  .banner-icon {
+    width: 30px;
+    height: 30px;
+  }
+} */
+
+
+/* קונטיינר הקלפים */
+.cards-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem; /* רווח בין הקלפים */
+  flex-wrap: wrap; /* לאפשר מעבר לשורה חדשה אם יש יותר מידי כרטיסים */
+  margin-bottom: 3rem; /* רווח בין שורות הכרטיסים */
+}
+
+/* כרטיס */
+.player-card {
+  background-color: #112240;
+  border: 8px solid;
+  border-radius: 15px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: none; /* הסרת תזוזה במעבר */
+  width: 150px; /* גודל ברירת מחדל של הכרטיסים */
+  height: 110px; /* גובה הכרטיסים */
+}
+
+/* כרטיס ראשון גדול יותר */
+.first-place {
+  width: 300px;
+  height: 200px;
+}
+
+/* כרטיסים קטנים יותר - מקום 2 ו-3 */
+.small-card {
+  top:18px;
+  width: 280px;
+  height: 160px;
+}
+
+/* אייקון מדליה */
+.medal {
+  position: absolute;
+  top: -20px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* מספר המדליה */
+.medal-number {
+  font-size: 1.2rem; /* גודל טקסט מותאם */
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+
+/* כוכב בחלק העליון הימני של הכרטיס */
+.star {
+  position: absolute;
+  top: -20px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* מספר המקום */
+.star-number {
+  font-size: 1.2rem; /* גודל טקסט מותאם */
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+/* טקסט נקודות */
+.points {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* תווית נקודות */
+.label {
+  font-size: 1rem;
+  color: #b0bec5;
+}
+
+/* אפקט למסגרת מתחלפת */
+@keyframes borderColorChange {
+  0% {
+    border-color: #ff0000;
+    box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 0.5);
+  }
+  25% {
+    border-color: #00ff00;
+    box-shadow: 0px 0px 10px 5px rgba(0, 255, 0, 0.5);
+  }
+  50% {
+    border-color: #0000ff;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 255, 0.5);
+  }
+  75% {
+    border-color: #ffff00;
+    box-shadow: 0px 0px 10px 5px rgba(255, 255, 0, 0.5);
+  }
+  100% {
+    border-color: #ff0000;
+    box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 0.5);
+  }
+}
+
+/* כרטיסים שאינם מקום 1,2,3 - מסגרת מתחלפת עם הילה צבעונית */
+.player-card:not(.first-place):not(.small-card) {
+  animation: borderColorChange 10s infinite;
+  border-width: 4px;
+  border-style: solid;
+}
+
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .top-players-container {
+    padding: 10px;
+  }
+  .cards-container {
+    gap: 0.5rem;
+  }
+  .player-card {
+    width: 150px; /* כרטיסים קטנים יותר בגרסה ניידת */
+    height: 80px; /* גובה כרטיסים בגרסה ניידת */
+  }
+  .first-place {
+    width: 200px;
+    height: 120px;
+  }
+  .star-number {
+    font-size: 1rem;
+  }
+  .points {
+    font-size: 1rem;
+  }
+  .label {
+    font-size: 0.8rem;
+  }
+}
