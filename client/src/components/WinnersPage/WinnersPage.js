@@ -4,18 +4,7 @@ import axios from 'axios';
 import './WinnersPage.css'; // אם יש סגנונות מותאמים אישית
 
 const WinnersPage = ({ winners, onRestart }) => {
-  useEffect(() => {
-    // אם האנשים המנצחים לא טוענים עדיין, טען אותם
-    if (!winners) {
-      axios.get('/api/quiz_winners')
-        .then(response => {
-          // ניתן להוסיף state לניהול המנצחים אם רוצים
-        })
-        .catch(error => {
-          console.error('Error fetching winners:', error);
-        });
-    }
-  }, [winners]);
+
 
   return (
     <div className="winners-page">

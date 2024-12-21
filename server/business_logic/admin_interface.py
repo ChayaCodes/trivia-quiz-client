@@ -124,21 +124,21 @@ def go_to_next_question(quiz_id):
     """
     quiz = get_quiz(quiz_id)
     if not quiz:
-        return {'error': 'Quiz not found.'}, 404
+        return {'error': 'Quiz not found.', 'status': 'inactive'}, 404
     quiz_questions = get_questions(quiz_id)
     if not quiz_questions:
-        return {'error': 'No questions found for this quiz.'}, 404
+        return {'error': 'No questions found for this quiz.', 'status': 'inactive'}, 404
     current_question_id = quiz.get('current_question_id')
     if not current_question_id:
-        return {'error': 'No active question for this quiz.'}, 400
+        return {'error': 'No active question for this quiz.', 'status': 'inactive'}, 400
     question_ids = [q.get('id') for q in quiz_questions]
     current_question_index = question_ids.index(current_question_id)
     if current_question_index == len(question_ids) - 1:
         update_quiz(quiz_id, status='completed')
-        return {'message': 'Quiz completed.'}, 200
+        return {'message': 'Quiz completed.', 'status': 'completed'}, 200
     next_question_id = question_ids[current_question_index + 1]
     update_quiz(quiz_id, current_question_id=next_question_id, question_start_time=int(time.time()))
-    return {'message': 'Moved to next question.'}, 200
+    return {'message': 'Moved to next question.', 'status': 'active'}, 200
 
 
 def get_quiz_statistics(quiz_id: str, user_id: str) -> tuple:

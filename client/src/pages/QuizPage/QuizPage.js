@@ -10,10 +10,11 @@ const QuizPage = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [quizStatus, setQuizStatus] = useState('');
   const [loading, setLoading] = useState(true);
+  const [next, setNext] = useState(false);
 
   useEffect(() => {
     fetchQuizData();
-    }, []);
+    }, [next]);
 
   const fetchQuizData = async () => {
     try {
@@ -28,9 +29,18 @@ const QuizPage = () => {
       setLoading(false);
     }
   };
+  
 
   const handleNextQuestion = async () => {
-    
+    try{
+         const data = await api.post(`/admin/go_to_next_question/${quizId}`);
+         setQuizStatus(data.data.status);
+         setNext(!next);
+         console.log('status:', quizStatus);
+         
+    }catch(error){
+        console.error('Error fetching quiz data:', error);
+    }
   };
 
   const handleShowStatistics = async () => {
